@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211b32">
+  <title>Churn Predictor</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header><div class="shell brand"><strong>Churn Predictor</strong><span>Local analysis</span></div></header>
+  <main class="shell">
+    <div class="intro"><h1>Customer churn analysis</h1><p>Compare two models and see how many likely churners fit within your contact budget.</p></div>
+    <div class="workspace">
+      <aside class="panel settings" aria-labelledby="settings-title">
+        <h2 id="settings-title">Configure analysis</h2>
+        <form id="analysis-form">
+          <label for="source">Dataset</label>
+          <select id="source"><option value="demo">Demo data · 2,500 customers</option><option value="csv">Upload a CSV</option></select>
+          <div id="upload" hidden>
+            <label for="csv-file">Customer CSV</label>
+            <input type="file" id="csv-file" accept=".csv,text/csv" aria-describedby="csv-help">
+            <p class="hint" id="csv-help">Up to 2 MB and 10,000 rows. Include a 0 or 1 churn outcome for each customer.</p>
+          </div>
+          <a class="sample" href="demo.csv" download>Download example CSV</a>
+          <label for="budget">Contact budget</label>
+          <div class="input-unit"><input type="number" id="budget" min="1" max="100" step="1" value="10" required aria-describedby="budget-help"><span aria-hidden="true">%</span></div>
+          <p class="hint" id="budget-help">Share of the test set to include on the contact list.</p>
+          <button type="submit" class="primary" id="run" disabled>Run analysis</button>
+        </form>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <p id="error" class="error" role="alert"></p>
+        <noscript><p>Enable JavaScript to run the analysis.</p></noscript>
+      </aside>
+      <section id="result" class="results" aria-label="Analysis results" aria-busy="true">
+        <div class="panel placeholder" id="placeholder"><h2>Analysis results</h2><p id="placeholder-text">Preparing the demo analysis…</p></div>
+        <div id="report" class="report" hidden>
+          <section class="panel overview" aria-labelledby="result-title">
+            <p id="result-source" class="dataset"></p>
+            <h2 id="result-title">Holdout results</h2>
+            <p id="result-context"></p>
+            <dl class="metrics">
+              <div><dt>ROC AUC</dt><dd id="auc"></dd><small>Ranking quality</small></div>
+              <div><dt>Precision</dt><dd id="precision"></dd><small>Contacted customers who churned</small></div>
+              <div><dt>Recall</dt><dd id="recall"></dd><small>Test churners on the list</small></div>
+              <div><dt>Lift</dt><dd id="lift"></dd><small>Compared with the test churn rate</small></div>
+            </dl>
+          </section>
+          <section class="panel data-panel" aria-labelledby="models-title">
+            <div class="section-head"><h2 id="models-title">Model comparison</h2><p id="split"></p></div>
+            <div class="scroll" tabindex="0" role="region" aria-label="Model comparison table"><table><thead><tr><th scope="col">Model</th><th scope="col">Validation ROC AUC</th><th scope="col">Validation average precision</th></tr></thead><tbody id="model-rows"></tbody></table></div>
+          </section>
+          <section class="panel data-panel" aria-labelledby="contacts-title">
+            <div class="section-head actions-head"><div><h2 id="contacts-title">Contact list</h2><p id="contact-detail"></p></div><div class="exports"><button class="secondary" id="csv-download" type="button">Download ranking CSV</button><button class="secondary" id="report-download" type="button">Download report</button></div></div>
+            <div class="scroll" tabindex="0" role="region" aria-label="Contact list table"><table><thead><tr><th scope="col">Rank</th><th scope="col">Customer ID</th><th scope="col">Risk score</th><th scope="col">Actual outcome</th></tr></thead><tbody id="contact-rows"></tbody></table></div>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
